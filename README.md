@@ -1,4 +1,5 @@
-﻿<h1 align="center">💫 HeroUI for Blazor</h1>
+﻿<img src="blazor.jpg"/>
+<h1 align="center">💫 HeroUI for Blazor</h1>
 
 <p align="center">
     让 <strong>HeroUI</strong> 在 <strong>Blazor</strong> 中也能优雅运行 ✨  
