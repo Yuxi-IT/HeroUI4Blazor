@@ -1,0 +1,32 @@
+﻿.checkbox-mark {
+    background-color: #1a1a1a;
+    border-color: #94a3b8;
+    border-radius:8px;
+}
+
+.check-icon {
+    transform: scale(1.1);
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+    .input-checkbox:checked + .checkbox-mark .check-icon {
+        stroke-dashoffset: 0;
+    }
+
+.input-checkbox:not(:checked) + .checkbox-mark {
+    background-color: #1a1a1a;
+    border-color: #94a3b8;
+    transform: scale(0.9);
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.input-checkbox:active + .checkbox-mark {
+    transform: scale(0.97);
+}
+
+.checkbox-label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}

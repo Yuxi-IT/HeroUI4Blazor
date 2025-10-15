@@ -1,4 +1,6 @@
-﻿<div class="@GetNavMenuClass() bg-black/20 @(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "")">
+﻿@using MauiApp1.Models;
+
+<div class="@GetNavMenuClass() bg-black/20 @(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "")">
     <div class="flex items-center justify-between p-4">
         <a href="/" class="flex items-center gap-2 font-bold text-sky-500 ml-5">
             <svg fill="none" height="24" viewBox="0 0 32 32" width="24" class="text-sky-500 scale-[2]">
@@ -6,7 +8,7 @@
                       d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
                       fill="currentColor" fill-rule="evenodd" />
             </svg>
-            MauiApp1
+            @Configs.ApplicationName
         </a>
 
         <button @onclick="ToggleMenu" class="p-2 rounded-md hover:bg-zinc-700/40 lg:hidden">
@@ -20,26 +22,15 @@
 
 
     <nav class="p-4 space-y-1 text-zinc-200 text-[15px]">
-        <NavLink href="" Match="NavLinkMatch.All"
-                 class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
-                 ActiveClass="text-sky-500 bg-zinc-700/40">
-            <HIcon Name="Home" ClassName="mr-2" />
-            Home
-        </NavLink>
-
-        <NavLink href="counter"
-                 class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
-                 ActiveClass="text-sky-500 bg-zinc-700/40">
-            <HIcon Name="Menu" ClassName="mr-2" />
-            Counter
-        </NavLink>
-
-        <NavLink href="weather"
-                 class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
-                 ActiveClass="text-sky-500 bg-zinc-700/40">
-            <HIcon Name="Database" ClassName="mr-2" />
-            Weather
-        </NavLink>
+        @foreach (var route in Configs.RouteList)
+        {
+            <NavLink href="@route.Href" Match="NavLinkMatch.All"
+                     class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
+                     ActiveClass="text-sky-500 bg-zinc-700/40">
+                <HIcon Name="@route.Icon" ClassName="mr-2 invert" />
+                @route.Name
+            </NavLink>
+        }
     </nav>
 </div>
 

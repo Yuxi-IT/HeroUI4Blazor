@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using HeroUI.Components
 
 @code{
     List<HColor> hColors = [
@@ -20,26 +21,38 @@ Welcome to HeroUI for Blazor.
           <div class="mb-2">
             <p class="text-[@color.ToHex()] w-20">@color.ToString()</p>
 
-            <HButton Color="color" Variant="HVariant.Bordered" Radius="10">
-                Bordered
-            </HButton>
-
-            <HButton Color="color" Variant="HVariant.Solid">
+            <HButton Color="color" Variant="HVariant.Solid" ClassName="m-1">
                 Solid
             </HButton>
 
-            <HButton Color="color" Variant="HVariant.Flat">
+            <HButton Color="color" Variant="HVariant.Flat" ClassName="m-1">
                 Flat
             </HButton>
 
-            <HButton Color="color" Variant="HVariant.Ghost">
+            <HButton Color="color" Variant="HVariant.Ghost" ClassName="m-1">
                 Ghost
             </HButton>
 
-            <HButton Color="color" Variant="HVariant.Light">
+            <HButton Color="color" Variant="HVariant.Bordered" ClassName="m-1">
+                Bordered
+            </HButton>
+
+            <HButton Color="color" Variant="HVariant.Light" ClassName="m-1">
                 Light
             </HButton>
         </div>
+        }
+    </div>
+    <div class="mb-4">
+        <h1 class="text-24">CheckBox</h1>
+        @foreach (var color in hColors)
+        {
+            <HCheckBox 
+                Label="@color.ToString()"
+                ClassName="mx-2"
+                Color="color"
+                Checked="true"
+            />
         }
     </div>
 </div>

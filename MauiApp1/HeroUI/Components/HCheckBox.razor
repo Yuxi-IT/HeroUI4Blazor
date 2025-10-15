@@ -1,330 +1,51 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
+﻿@namespace HeroUI.Components
+@using MauiApp1.HeroUI.Enum
+@using MauiApp1.HeroUI.Extensions
 @using Microsoft.AspNetCore.Components.Web
-@using MauiApp1.HeroUI.Enum;
-@using MauiApp1.HeroUI.Extensions;
 
-<div class="checkbox-container">
-    <label @attributes="AdditionalAttributes" class="checkbox-base @BaseClass">
-        <input 
-            type="checkbox" 
+<label class="checkbox-container inline-flex items-center cursor-pointer gap-2 @ClassName">
+    <input 
+        type="checkbox" 
+        class="sr-only peer input-checkbox" 
+        @bind="Checked" 
+        @onclick="HandleClick"
+        disabled="@Disabled"
+    />
+    <span class="checkbox-mark w-5 h-5 border-2 border-gray-400 rounded-md flex items-center justify-center relative overflow-hidden transition-all duration-200 ease-in-out active:scale-[0.97] peer-checked:bg-[@Color.ToHex()] peer-checked:border-[@Color.ToHex()]">
+        <svg class="check-icon w-3 h-3 stroke-current text-white absolute" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+    </span>
 
-            @onchange="HandleChange"
-            @onfocus="HandleFocus"
-            @onblur="HandleBlur"
-            @onmouseover="HandleMouseOver"
-            @onmouseout="HandleMouseOut"
-            @onmousedown="HandleMouseDown"
-            @onmouseup="HandleMouseUp"
-            disabled="@IsDisabled"
-            class="checkbox-input @HiddenInputClass"
-        />
-        <span class="checkbox-wrapper @WrapperClass" aria-hidden="true">
-            @if (Icon != null)
-            {
-                @Icon
-            }
-            else
-            {
-                <svg class="checkbox-icon @IconClass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="20 6 9 17 4 12" />
-                </svg>
-            }
-        </span>
-        @if (!string.IsNullOrEmpty(Label))
-        {
-            <span class="checkbox-label @LabelClass">@Label</span>
-        }
-    </label>
-</div>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="checkbox-label text-white">@Label</span>
+    }
+</label>
 
 @code {
-    [Parameter]
-    public string Label { get; set; }
+    [Parameter] public bool Checked { get; set; }
+    [Parameter] public EventCallback<bool> CheckedChanged { get; set; }
+    [Parameter] public string Label { get; set; }
+    [Parameter] public HColor Color { get; set; } = HColor.Primary;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string ClassName { get; set; }
+    [Parameter] public string Style { get; set; }
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    [Parameter]
-    public bool IsDisabled { get; set; } = false;
-
-    [Parameter]
-    public bool IsIndeterminate { get; set; } = false;
-
-    [Parameter]
-    public bool DefaultSelected { get; set; } = false;
-
-    [Parameter]
-    public HColor Color { get; set; } = HColor.Primary;
-
-    [Parameter]
-    public string Size { get; set; } = "md";
-
-    [Parameter]
-    public string Radius { get; set; } = "md";
-
-    [Parameter]
-    public bool LineThrough { get; set; } = false;
-
-    [Parameter]
-    public bool DisableAnimation { get; set; } = false;
-
-    [Parameter]
-    public bool IsInvalid { get; set; } = false;
-
-    [Parameter]
-    public RenderFragment Icon { get; set; }
-
-    [Parameter]
-    public EventCallback<bool> OnValueChange { get; set; }
-
-    [Parameter(CaptureUnmatchedValues = true)]
-    public IDictionary<string, object> AdditionalAttributes { get; set; }
-
-    private bool _value;
-    private bool _isFocused;
-    private bool _isHovered;
-    private bool _isPressed;
-
-    public bool CurrentValue
+    private async Task HandleClick(MouseEventArgs e)
     {
-        get => _value;
-        set
+        if (!Disabled)
         {
-            if (_value != value)
-            {
-                _value = value;
-                OnValueChange.InvokeAsync(value);
-            }
+            await OnClick.InvokeAsync(e);
+            await CheckedChanged.InvokeAsync(Checked);
         }
     }
 
-    protected override void OnInitialized()
+    private string BuildClass()
     {
-        _value = DefaultSelected;
-        base.OnInitialized();
+        var hex = Color.ToHex();
+        return $"peer-checked:bg-[{hex}] peer-checked:border-[{hex}]";
     }
 
-    private string BaseClass => BuildBaseClass();
-    private string WrapperClass => BuildWrapperClass();
-    private string IconClass => BuildIconClass();
-    private string LabelClass => BuildLabelClass();
-    private string HiddenInputClass => "sr-only peer sr-only";
-
-    private string BuildBaseClass()
-    {
-        var classes = new List<string>
-        {
-            "group relative max-w-fit inline-flex items-center justify-start cursor-pointer",
-            "tap-highlight-transparent p-2 -m-2 select-none"
-        };
-
-        if (IsDisabled)
-            classes.Add("opacity-disabled pointer-events-none");
-
-        if (_isHovered)
-            classes.Add("data-[hover=true]");
-
-        if (_isFocused)
-            classes.Add("data-[focus=true]");
-
-        if (_isPressed)
-            classes.Add("data-[pressed=true]");
-
-        if (CurrentValue || IsIndeterminate)
-            classes.Add("data-[selected=true]");
-
-        if (IsInvalid)
-            classes.Add("data-[invalid=true]");
-
-        return string.Join(" ", classes);
-    }
-
-    private string BuildWrapperClass()
-    {
-        var classes = new List<string>
-        {
-            "relative inline-flex items-center justify-center shrink-0 overflow-hidden",
-            "before:content-[''] before:absolute before:inset-0 before:border-solid before:border-2 before:border-default",
-            "after:content-[''] after:absolute after:inset-0 after:scale-50 after:opacity-0 after:origin-center",
-            "group-data-[selected=true]:after:scale-100 group-data-[selected=true]:after:opacity-100",
-            "group-data-[hover=true]:before:bg-default-100"
-        };
-
-        // Color variants
-        switch (Color)
-        {
-            case HColor.Default:
-                classes.Add("after:bg-default after:text-default-foreground text-default-foreground");
-                break;
-            case HColor.Primary:
-                classes.Add("after:bg-primary after:text-sky-foreground text-sky-foreground");
-                break;
-            case HColor.Secondary:
-                classes.Add("after:bg-secondary after:text-secondary-foreground text-secondary-foreground");
-                break;
-            case HColor.Success:
-                classes.Add("after:bg-success after:text-success-foreground text-success-foreground");
-                break;
-            case HColor.Warning:
-                classes.Add("after:bg-warning after:text-warning-foreground text-warning-foreground");
-                break;
-            case HColor.Danger:
-                classes.Add("after:bg-danger after:text-danger-foreground text-danger-foreground");
-                break;
-        }
-
-        // Size variants
-        switch (Size)
-        {
-            case "sm":
-                classes.Add("w-4 h-4 me-2");
-                break;
-            case "md":
-                classes.Add("w-5 h-5 me-2");
-                break;
-            case "lg":
-                classes.Add("w-6 h-6 me-2");
-                break;
-        }
-
-        // Radius variants
-        if (!string.IsNullOrEmpty(Radius))
-        {
-            switch (Radius)
-            {
-                case "none":
-                    classes.Add("rounded-none before:rounded-none after:rounded-none");
-                    break;
-                case "sm":
-                    classes.Add("rounded-[calc(var(--heroui-radius-medium)*0.5)] before:rounded-[calc(var(--heroui-radius-medium)*0.5)] after:rounded-[calc(var(--heroui-radius-medium)*0.5)]");
-                    break;
-                case "md":
-                    classes.Add("rounded-[calc(var(--heroui-radius-medium)*0.6)] before:rounded-[calc(var(--heroui-radius-medium)*0.6)] after:rounded-[calc(var(--heroui-radius-medium)*0.6)]");
-                    break;
-                case "lg":
-                    classes.Add("rounded-[calc(var(--heroui-radius-medium)*0.7)] before:rounded-[calc(var(--heroui-radius-medium)*0.7)] after:rounded-[calc(var(--heroui-radius-medium)*0.7)]");
-                    break;
-                case "full":
-                    classes.Add("rounded-full before:rounded-full after:rounded-full");
-                    break;
-            }
-        }
-
-        // Animation
-        if (DisableAnimation)
-        {
-            classes.Add("transition-none");
-        }
-        else
-        {
-            classes.Add("before:transition-colors group-data-[pressed=true]:scale-95 transition-transform");
-            classes.Add("after:transition-transform-opacity after:!ease-linear after:!duration-200 motion-reduce:transition-none");
-        }
-
-        // Invalid state
-        if (IsInvalid)
-            classes.Add("before:border-danger");
-
-        return string.Join(" ", classes);
-    }
-
-    private string BuildIconClass()
-    {
-        var classes = new List<string>
-        {
-            "z-10 opacity-0 group-data-[selected=true]:opacity-100 pointer-events-none"
-        };
-
-        switch (Size)
-        {
-            case "sm":
-                classes.Add("w-3 h-2");
-                break;
-            case "md":
-                classes.Add("w-4 h-3");
-                break;
-            case "lg":
-                classes.Add("w-5 h-4");
-                break;
-        }
-
-        if (DisableAnimation)
-            classes.Add("transition-none");
-        else
-            classes.Add("transition-opacity motion-reduce:transition-none");
-
-        return string.Join(" ", classes);
-    }
-
-    private string BuildLabelClass()
-    {
-        var classes = new List<string> { "relative text-foreground select-none" };
-
-        switch (Size)
-        {
-            case "sm":
-                classes.Add("text-small");
-                break;
-            case "md":
-                classes.Add("text-medium");
-                break;
-            case "lg":
-                classes.Add("text-large");
-                break;
-        }
-
-        if (LineThrough)
-        {
-            classes.AddRange(new[] {
-                "inline-flex items-center justify-center before:content-[''] before:absolute before:bg-foreground",
-                "before:w-0 before:h-0.5 group-data-[selected=true]:opacity-60 group-data-[selected=true]:before:w-full"
-            });
-        }
-
-        if (IsInvalid)
-            classes.Add("text-danger");
-
-        if (!DisableAnimation)
-            classes.Add("transition-colors-opacity before:transition-width motion-reduce:transition-none");
-
-        return string.Join(" ", classes);
-    }
-
-    private void HandleChange(ChangeEventArgs e)
-    {
-        if (IsDisabled) return;
-        CurrentValue = (bool)e.Value;
-    }
-
-    private void HandleFocus(FocusEventArgs e)
-    {
-        _isFocused = true;
-    }
-
-    private void HandleBlur(FocusEventArgs e)
-    {
-        _isFocused = false;
-    }
-
-    private void HandleMouseOver(MouseEventArgs e)
-    {
-        if (IsDisabled) return;
-        _isHovered = true;
-    }
-
-    private void HandleMouseOut(MouseEventArgs e)
-    {
-        if (IsDisabled) return;
-        _isHovered = false;
-        _isPressed = false;
-    }
-
-    private void HandleMouseDown(MouseEventArgs e)
-    {
-        if (IsDisabled) return;
-        _isPressed = true;
-    }
-
-    private void HandleMouseUp(MouseEventArgs e)
-    {
-        if (IsDisabled) return;
-        _isPressed = false;
-    }
 }
