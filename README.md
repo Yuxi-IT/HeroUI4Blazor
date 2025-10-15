@@ -47,6 +47,13 @@
 
 ---
 
+## ✅已完成项 | Completed item
+- ✓ Button
+- ✓ CheckBox
+- ✓ Sidebar(originate)
+- ✓ React-Feather-Icon
+---
+
 <p align="center">
   Made with ❤️ by <a href="https://github.com/yuxi-IT">Yuxi-IT</a>
 </p>
