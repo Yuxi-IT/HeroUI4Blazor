@@ -1,0 +1,65 @@
+﻿<div class="@GetNavMenuClass() bg-black/20 @(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "")">
+    <div class="flex items-center justify-between p-4">
+        <a href="/" class="flex items-center gap-2 font-bold text-sky-500 ml-5">
+            <svg fill="none" height="24" viewBox="0 0 32 32" width="24" class="text-sky-500 scale-[2]">
+                <path clip-rule="evenodd"
+                      d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
+                      fill="currentColor" fill-rule="evenodd" />
+            </svg>
+            MauiApp1
+        </a>
+
+        <button @onclick="ToggleMenu" class="p-2 rounded-md hover:bg-zinc-700/40 lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none"
+                 stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        </button>
+    </div>
+
+
+    <nav class="p-4 space-y-1 text-zinc-200 text-[15px]">
+        <NavLink href="" Match="NavLinkMatch.All"
+                 class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
+                 ActiveClass="text-sky-500 bg-zinc-700/40">
+            <HIcon Name="Home" ClassName="mr-2" />
+            Home
+        </NavLink>
+
+        <NavLink href="counter"
+                 class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
+                 ActiveClass="text-sky-500 bg-zinc-700/40">
+            <HIcon Name="Menu" ClassName="mr-2" />
+            Counter
+        </NavLink>
+
+        <NavLink href="weather"
+                 class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
+                 ActiveClass="text-sky-500 bg-zinc-700/40">
+            <HIcon Name="Database" ClassName="mr-2" />
+            Weather
+        </NavLink>
+    </nav>
+</div>
+
+@if (IsOpen)
+{
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 lg:hidden" @onclick="ToggleMenu"></div>
+}
+
+@code {
+    private bool IsOpen { get; set; }
+
+    public void ToggleMenu()
+    {
+        IsOpen = !IsOpen;
+        StateHasChanged();
+    }
+
+    private string GetNavMenuClass()
+    {
+        var baseClasses = "fixed left-0 top-0 z-30 h-screen w-64 border-r border-zinc-700 bg-zinc-900 transform transition-transform duration-300 ease-in-out";
+        return IsOpen ? $"{baseClasses} translate-x-0" : $"{baseClasses} -translate-x-full lg:translate-x-0";
+    }
+}

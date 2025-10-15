@@ -1,0 +1,170 @@
+﻿@using MauiApp1.HeroUI.Enum;
+@using MauiApp1.HeroUI.Extensions;
+@using Microsoft.AspNetCore.Components.Web;
+@implements IDisposable
+
+<button type="button"
+        variant="@Variant"
+        color="@Color"
+        class="@BuildClass() @BuildStyle() ripple-button"
+        @onclick="HandleClick"
+        @onmouseover="HandleHover"
+        @onmouseout="HandleHoverLeave"
+        @onmousedown="HandlePress"
+        @onmouseup="HandleRelease"
+        @onmouseleave="HandleRelease">
+
+    @ChildContent
+</button>
+
+@code {
+    [Parameter] public HColor Color { get; set; } = HColor.Primary;
+    [Parameter] public HVariant Variant { get; set; } = HVariant.Solid;
+    [Parameter] public string? ClassName { get; set; }
+    [Parameter] public int Radius { get; set; } = 10;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public EventCallback OnHover { get; set; }
+    [Parameter] public EventCallback OnLongPress { get; set; }
+
+    private bool _isPressed = false;
+    private bool _isHovered = false;
+    private System.Timers.Timer? _longPressTimer;
+
+    private async Task HandleClick(MouseEventArgs e) => await OnClick.InvokeAsync();
+    private async Task HandleHover(MouseEventArgs e)
+    {
+        _isHovered = true;
+        await OnHover.InvokeAsync();
+        StateHasChanged();
+    }
+
+    private void HandleHoverLeave(MouseEventArgs e)
+    {
+        _isHovered = false;
+        StateHasChanged();
+    }
+
+    private void HandlePress(MouseEventArgs e)
+    {
+        _isPressed = true;
+        StateHasChanged();
+        StartLongPress();
+    }
+
+    private void HandleRelease(MouseEventArgs e)
+    {
+        _isPressed = false;
+        CancelLongPress();
+        StateHasChanged();
+    }
+
+    private void StartLongPress()
+    {
+        _longPressTimer = new System.Timers.Timer(500);
+        _longPressTimer.Elapsed += async (_, _) =>
+        {
+            if (_isPressed)
+                await InvokeAsync(() => OnLongPress.InvokeAsync());
+            _longPressTimer?.Stop();
+        };
+        _longPressTimer.Start();
+    }
+
+    private void CancelLongPress()
+    {
+        _longPressTimer?.Stop();
+        _longPressTimer?.Dispose();
+        _longPressTimer = null;
+    }
+
+    public void Dispose()
+    {
+        _longPressTimer?.Dispose();
+    }
+
+    private string BuildClass()
+    {
+        var baseClass = string.Join(" ", new[]
+        {
+            "z-0 group relative inline-flex items-center justify-center appearance-none select-none whitespace-nowrap",
+            "font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent transform-gpu",
+            "cursor-pointer",
+            "px-4 min-w-20 h-10 text-small gap-2 rounded-medium transition-all duration-300 ease-in-out",
+            ClassName
+        }.Where(c => !string.IsNullOrWhiteSpace(c)));
+
+        return baseClass.Trim();
+    }
+
+    private string BuildStyle()
+    {
+        var classes = new List<string>();
+
+        var radiusClass = Radius switch
+        {
+            <= 0 => "rounded-none",
+            <= 2 => "rounded-sm",
+            <= 4 => "rounded",
+            <= 6 => "rounded-md",
+            <= 8 => "rounded-lg",
+            <= 12 => "rounded-xl",
+            <= 16 => "rounded-2xl",
+            _ => "rounded-full"
+        };
+        classes.Add(radiusClass);
+
+        classes.Add(_isPressed ? "scale-[0.97]" : "scale-100");
+
+        classes.Add("box-border");
+
+        var baseHex = Color.ToHex();
+        var bg = $"bg-[{baseHex}]";
+        var bgHover = $"hover:{bg}/80";
+        classes.Add($"border-2");
+        switch (Variant)
+        {
+            case HVariant.Bordered:
+                classes.Add($"border-[{baseHex}]");
+                classes.Add($"text-[{baseHex}]");
+                break;
+
+            case HVariant.Ghost:
+                classes.Add($"border-[{baseHex}]");
+                classes.Add($"text-[{baseHex}]");
+                classes.Add($"hover:{bg}");
+                classes.Add("hover:text-white");
+                break;
+
+            case HVariant.Flat:
+                classes.Add($"{bg}/50");
+                classes.Add($"border-[{baseHex}]/20");
+                
+                classes.Add($"hover:{bg}/40");
+                classes.Add($"hover:border-[{baseHex}]/10");
+
+                classes.Add($"text-[{baseHex}]");
+                break;
+
+            case HVariant.Light:
+                classes.Add($"text-[{baseHex}]");
+                classes.Add($"hover:{bg}/20");
+                classes.Add($"border-[#00000000]");
+                classes.Add($"hover:border-[{baseHex}]/5");
+                break;
+
+            case HVariant.Solid:
+            default:
+                classes.Add($"border-[{baseHex}]");
+                classes.Add($"hover:border-[{baseHex}]/80");
+                classes.Add("text-white");
+                classes.Add(bg);
+                classes.Add(bgHover);
+                break;
+        }
+
+        return string.Join(" ", classes);
+    }
+
+}

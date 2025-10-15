@@ -1,0 +1,32 @@
+﻿@using System.IO
+@using MauiApp1.HeroUI.Enum
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+
+<span class="inline-block @ClassName text-[@Color.ToLower()]"
+      style="width:@(Size.Width)px; height:@(Size.Height)px;"
+      @onclick="OnClick">
+    @((MarkupString)SvgContent)
+</span>
+
+@code {
+    [Parameter] public string Color { get; set; } = "#fff";
+    [Parameter] public required string Name { get; set; }
+    [Parameter] public string? ClassName { get; set; }
+    [Parameter] public required Size Size { get; set; } = new() { Width = 24, Height = 24 };
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    private string SvgContent = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var path = Path.Combine("wwwroot", "icon", "react-feather", $"{Name.ToLower()}.svg");
+        if (File.Exists(path))
+        {
+            SvgContent = await File.ReadAllTextAsync(path);
+            SvgContent = SvgContent
+                .Replace("stroke=\".*?\"", "stroke=\"currentColor\"")
+                .Replace("fill=\".*?\"", "fill=\"currentColor\"");
+        }
+    }
+}

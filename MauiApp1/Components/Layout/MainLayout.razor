@@ -1,0 +1,52 @@
+﻿@using MauiApp1.Models
+@inherits LayoutComponentBase
+
+<div class="@(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "") min-h-screen flex flex-col bg-zinc-900 text-zinc-100">
+    <header class="sticky top-0 z-10 border-b border-zinc-700 bg-zinc-900/80 backdrop-blur-md  lg:hidden">
+        <div class="max-w-screen-xl mx-auto px-4">
+            <div class="flex h-16 items-center justify-between">
+                <button @onclick="ToggleNavMenu" class="p-2 rounded-md hover:bg-zinc-700/40 lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                         fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="mr-10 text-sm font-medium">
+                    <a href="https://learn.microsoft.com/aspnet/core/"
+                       target="_blank"
+                       class="hover:text-sky-400 transition-colors">
+                        About
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1">
+        <NavMenu @ref="NavMenu" />
+
+        <main class="flex-1 lg:ml-64 transition-all duration-300">
+            <div @key="@NavigationKey"
+                 class="animate-fade-in opacity-0">
+                <article class="max-w-screen-xl mx-auto px-4 py-6">
+                    @Body
+                </article>
+            </div>
+        </main>
+    </div>
+</div>
+
+@code {
+    private NavMenu NavMenu { get; set; }
+    private string NavigationKey => NavigationManager.Uri;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private void ToggleNavMenu()
+    {
+        NavMenu?.ToggleMenu();
+    }
+}

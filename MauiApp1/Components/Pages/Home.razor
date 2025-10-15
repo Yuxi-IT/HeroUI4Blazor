@@ -1,0 +1,45 @@
+﻿@page "/"
+
+@code{
+    List<HColor> hColors = [
+        HColor.Primary,
+        HColor.Warning,
+        HColor.Danger,
+        HColor.Success,
+        HColor.Secondary
+        ];
+}
+<h1>Hello, world!</h1>
+
+Welcome to HeroUI for Blazor.
+<div>
+    <div class="mb-4">
+        <h1 class="text-24">Buttons</h1>
+        @foreach (var color in hColors)
+        {
+          <div class="mb-2">
+            <p class="text-[@color.ToHex()] w-20">@color.ToString()</p>
+
+            <HButton Color="color" Variant="HVariant.Bordered" Radius="10">
+                Bordered
+            </HButton>
+
+            <HButton Color="color" Variant="HVariant.Solid">
+                Solid
+            </HButton>
+
+            <HButton Color="color" Variant="HVariant.Flat">
+                Flat
+            </HButton>
+
+            <HButton Color="color" Variant="HVariant.Ghost">
+                Ghost
+            </HButton>
+
+            <HButton Color="color" Variant="HVariant.Light">
+                Light
+            </HButton>
+        </div>
+        }
+    </div>
+</div>
