@@ -1,9 +1,8 @@
 ﻿@using MauiApp1.Models;
-
-<div class="@GetNavMenuClass() bg-black/20 @(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "")">
+<div class="@GetNavMenuClass() bg-white/30 dark:bg-black/30 @(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "")">
     <div class="flex items-center justify-between p-4">
-        <a href="/" class="flex items-center gap-2 font-bold text-sky-500 ml-5">
-            <svg fill="none" height="24" viewBox="0 0 32 32" width="24" class="text-sky-500 scale-[2]">
+        <a href="/" class="flex items-center gap-2 font-bold text-sky-600 dark:text-sky-500 ml-5">
+            <svg fill="none" height="24" viewBox="0 0 32 32" width="24" class="text-sky-600 dark:text-sky-500 scale-[2]">
                 <path clip-rule="evenodd"
                       d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
                       fill="currentColor" fill-rule="evenodd" />
@@ -11,32 +10,30 @@
             @Configs.ApplicationName
         </a>
 
-        <button @onclick="ToggleMenu" class="p-2 rounded-md hover:bg-zinc-700/40 lg:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none"
-                 stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-        </button>
+        <HButton OnClick="ToggleMenu" ClassName="rounded-md hover:bg-zinc-700/40 lg:hidden md:hidden" Variant="HVariant.Light" IsIconOnly="true">
+            <HIcon Name="X"/>
+        </HButton>
     </div>
 
-
-    <nav class="p-4 space-y-1 text-zinc-200 text-[15px]">
-        @foreach (var route in Configs.RouteList)
-        {
-            <NavLink href="@route.Href" Match="NavLinkMatch.All"
-                     class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-zinc-700/50"
-                     ActiveClass="text-sky-500 bg-zinc-700/40">
-                <HIcon Name="@route.Icon" ClassName="mr-2 invert" />
-                @route.Name
-            </NavLink>
-        }
+    <nav class="flex flex-col h-full p-4 text-zinc-800 dark:text-zinc-200 text-[15px]">
+        <div class="flex-1 space-y-1 overflow-y-auto">
+            @foreach (var route in Configs.RouteList)
+            {
+                <NavLink href="@route.Href" Match="NavLinkMatch.All"
+                         class="flex items-center px-3 py-2 rounded-xl font-medium transition-colors hover:bg-gray-300/50 dark:hover:bg-zinc-700/50"
+                         ActiveClass="text-sky-600 dark:text-sky-500 bg-zinc-200/40 dark:bg-zinc-700/40">
+                    <HIcon Name="@route.Icon" ClassName="mr-2" />
+                    @route.Name
+                </NavLink>
+            }
+        </div>
     </nav>
+
 </div>
 
 @if (IsOpen)
 {
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 lg:hidden" @onclick="ToggleMenu"></div>
+    <div class="fixed inset-0 dark:bg-black/30 bg-white/30 backdrop-blur-md z-20 lg:hidden md:hidden" @onclick="ToggleMenu"></div>
 }
 
 @code {
@@ -50,7 +47,7 @@
 
     private string GetNavMenuClass()
     {
-        var baseClasses = "fixed left-0 top-0 z-30 h-screen w-64 border-r border-zinc-700 bg-zinc-900 transform transition-transform duration-300 ease-in-out";
-        return IsOpen ? $"{baseClasses} translate-x-0" : $"{baseClasses} -translate-x-full lg:translate-x-0";
+        var baseClasses = "fixed left-0 top-0 z-30 h-screen w-64 border-r dark:border-zinc-700 dark:bg-zinc-900 transform transition-all duration-300 ease-in-out";
+        return IsOpen ? $"{baseClasses} translate-x-0" : $"{baseClasses} -translate-x-full lg:translate-x-0 md:translate-x-0";
     }
 }

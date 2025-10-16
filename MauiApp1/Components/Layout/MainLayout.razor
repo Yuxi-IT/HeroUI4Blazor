@@ -1,35 +1,26 @@
 ﻿@using MauiApp1.Models
 @inherits LayoutComponentBase
 
-<div class="@(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "") min-h-screen flex flex-col bg-zinc-900 text-zinc-100">
-    <header class="sticky top-0 z-10 border-b border-zinc-700 bg-zinc-900/80 backdrop-blur-md  lg:hidden">
+<div class="@(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "") fixed top-0 left-0 right-0 bottom-0 flex flex-col bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+
+
+    <header class="sticky top-0 z-20 border-b border-zinc-200 bg-zinc-100/80 backdrop-blur-md dark:border-zinc-700 dark:bg-zinc-900/80 lg:hidden md:hidden">
         <div class="max-w-screen-xl mx-auto px-4">
             <div class="flex h-16 items-center justify-between">
-                <button @onclick="ToggleNavMenu" class="p-2 rounded-md hover:bg-zinc-700/40 lg:hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-                         fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="mr-10 text-sm font-medium">
-                    <a href="https://learn.microsoft.com/aspnet/core/"
-                       target="_blank"
-                       class="hover:text-sky-400 transition-colors">
-                        About
-                    </a>
-                </div>
+                <HButton OnClick="ToggleNavMenu"
+                         ClassName="p-2 rounded-md hover:bg-zinc-700/40 lg:hidden md:hidden"
+                         Variant="HVariant.Light"
+                         IsIconOnly="true">
+                    <HIcon Name="Menu" />
+                </HButton>
             </div>
         </div>
     </header>
 
-    <div class="flex flex-1">
+    <div class="flex flex-1 overflow-hidden">
         <NavMenu @ref="NavMenu" />
-
-        <main class="flex-1 lg:ml-64 transition-all duration-300">
-            <div @key="@NavigationKey"
-                 class="animate-fade-in opacity-0">
+        <main class="flex-1 lg:ml-64 md:ml-64 overflow-y-auto transition-all duration-300">
+            <div @key="@NavigationKey" class="animate-fade-in opacity-0">
                 <article class="max-w-screen-xl mx-auto px-4 py-6">
                     @Body
                 </article>
@@ -42,8 +33,7 @@
     private NavMenu NavMenu { get; set; }
     private string NavigationKey => NavigationManager.Uri;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
 
     private void ToggleNavMenu()
     {

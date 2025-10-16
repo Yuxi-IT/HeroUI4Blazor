@@ -23,6 +23,7 @@
     [Parameter] public string? ClassName { get; set; }
     [Parameter] public int Radius { get; set; } = 10;
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool IsIconOnly { get; set; } = false;
 
     [Parameter] public EventCallback OnClick { get; set; }
     [Parameter] public EventCallback OnHover { get; set; }
@@ -86,17 +87,28 @@
 
     private string BuildClass()
     {
-        var baseClass = string.Join(" ", new[]
+        var classes = new List<string>
         {
             "z-0 group relative inline-flex items-center justify-center appearance-none select-none whitespace-nowrap",
             "font-normal subpixel-antialiased overflow-hidden tap-highlight-transparent transform-gpu",
-            "cursor-pointer",
-            "px-4 min-w-20 h-10 text-small gap-2 rounded-medium transition-all duration-300 ease-in-out",
-            ClassName
-        }.Where(c => !string.IsNullOrWhiteSpace(c)));
+            "cursor-pointer transition-all duration-300 ease-in-out rounded-medium",
+        };
 
-        return baseClass.Trim();
+        if (IsIconOnly)
+        {
+            classes.Add("w-10 h-10 p-0");
+        }
+        else
+        {
+            classes.Add("px-4 min-w-20 h-10 gap-2");
+        }
+
+        if (!string.IsNullOrWhiteSpace(ClassName))
+            classes.Add(ClassName);
+
+        return string.Join(" ", classes);
     }
+
 
     private string BuildStyle()
     {
@@ -120,6 +132,9 @@
         classes.Add("box-border");
 
         var baseHex = Color.ToHex();
+        if (Color == HColor.Default)
+            baseHex = "#fff";
+
         var bg = $"bg-[{baseHex}]";
         var bgHover = $"hover:{bg}/80";
         classes.Add($"border-2");

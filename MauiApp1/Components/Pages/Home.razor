@@ -15,29 +15,30 @@
 Welcome to HeroUI for Blazor.
 <div>
     <div class="mb-4">
-        <h1 class="text-24">Buttons</h1>
+        <h1>Buttons</h1>
+        <h2>@((MarkupString)text)</h2>
         @foreach (var color in hColors)
         {
           <div class="mb-2">
             <p class="text-[@color.ToHex()] w-20">@color.ToString()</p>
 
-            <HButton Color="color" Variant="HVariant.Solid" ClassName="m-1">
+            <HButton Color="color" Variant="HVariant.Solid" ClassName="m-1" OnLongPress="() => HandlePress(color)" OnClick="()=>HandleClick(color)">
                 Solid
             </HButton>
 
-            <HButton Color="color" Variant="HVariant.Flat" ClassName="m-1">
+            <HButton Color="color" Variant="HVariant.Flat" ClassName="m-1" OnLongPress="() => HandlePress(color)" OnClick="()=>HandleClick(color)">
                 Flat
             </HButton>
 
-            <HButton Color="color" Variant="HVariant.Ghost" ClassName="m-1">
+            <HButton Color="color" Variant="HVariant.Ghost" ClassName="m-1" OnLongPress="() => HandlePress(color)" OnClick="()=>HandleClick(color)">
                 Ghost
             </HButton>
 
-            <HButton Color="color" Variant="HVariant.Bordered" ClassName="m-1">
+            <HButton Color="color" Variant="HVariant.Bordered" ClassName="m-1" OnLongPress="() => HandlePress(color)" OnClick="()=>HandleClick(color)">
                 Bordered
             </HButton>
 
-            <HButton Color="color" Variant="HVariant.Light" ClassName="m-1">
+            <HButton Color="color" Variant="HVariant.Light" ClassName="m-1" OnLongPress="() => HandlePress(color)" OnClick="()=>HandleClick(color)">
                 Light
             </HButton>
         </div>
@@ -56,3 +57,9 @@ Welcome to HeroUI for Blazor.
         }
     </div>
 </div>
+
+@code{
+    private string text = "Waiting...";
+    private void HandlePress(HColor Color) => text = $"<span class=\"text-[{Color.ToHex()}]\">LongPress {Color}</span>";
+    private void HandleClick(HColor Color) => text = $"<span class=\"text-[{Color.ToHex()}]\">OnClick {Color}</span>";
+}

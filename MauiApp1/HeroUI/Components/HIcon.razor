@@ -2,7 +2,7 @@
 @using MauiApp1.HeroUI.Extensions;
 @using Microsoft.AspNetCore.Components.Web;
 
-<img class="text-@Color.ToString().ToLower() w-[@(Size.Width)px] h-[@(Size.Height)px] @ClassName"
+<img class="text-@Color.ToString().ToLower() w-[@(Size.Width)px] h-[@(Size.Height)px] @ClassName dark:invert"
      src="icon/react-feather/@(Name.ToLower()).svg" />
 
 @code {
