@@ -15,6 +15,8 @@
 ---
 
 ## 🌍 简介 | Introduction
+- 📱 [Android端Demo](https://www.bilibili.com/video/BV1QXW7z5EKh)  
+- 💻 [Windows端Demo](https://www.bilibili.com/video/BV1QDW7zyEVw)  
 
 > 🇨🇳  
 > 我们希望通过这个项目，让 **HeroUI** 组件库在 **Blazor** 中也能被优雅地使用 ✨。  
