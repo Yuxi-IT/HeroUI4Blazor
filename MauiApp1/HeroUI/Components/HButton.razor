@@ -18,12 +18,14 @@
 </button>
 
 @code {
-    [Parameter] public HColor Color { get; set; } = HColor.Primary;
+    [Parameter] public ButtonGroupPosition GroupPosition { get; set; } = ButtonGroupPosition.None;
+    [Parameter] public HColor Color { get; set; } = HColor.Default;
     [Parameter] public HVariant Variant { get; set; } = HVariant.Solid;
     [Parameter] public string? ClassName { get; set; }
-    [Parameter] public int Radius { get; set; } = 10;
+    [Parameter] public string Radius { get; set; } = "xl";
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool IsIconOnly { get; set; } = false;
+    [Parameter] public bool InGroup { get; set; } = false;
 
     [Parameter] public EventCallback OnClick { get; set; }
     [Parameter] public EventCallback OnHover { get; set; }
@@ -114,26 +116,33 @@
     {
         var classes = new List<string>();
 
-        var radiusClass = Radius switch
-        {
-            <= 0 => "rounded-none",
-            <= 2 => "rounded-sm",
-            <= 4 => "rounded",
-            <= 6 => "rounded-md",
-            <= 8 => "rounded-lg",
-            <= 12 => "rounded-xl",
-            <= 16 => "rounded-2xl",
-            _ => "rounded-full"
-        };
-        classes.Add(radiusClass);
-
         classes.Add(_isPressed ? "scale-[0.97]" : "scale-100");
 
         classes.Add("box-border");
+        if (InGroup)
+        {
+            switch (GroupPosition)
+            {
+                case ButtonGroupPosition.First:
+                    classes.Add($"rounded-l-{Radius} rounded-r-none");
+                    break;
+                case ButtonGroupPosition.Last:
+                    classes.Add($"rounded-l-none rounded-r-{Radius}");
+                    break;
+                case ButtonGroupPosition.Middle:
+                    classes.Add("rounded-none");
+                    break;
+                default:
+                    classes.Add($"rounded-{Radius}");
+                    break;
+            }
+        }
+        else
+        {
+             classes.Add($"rounded-{Radius}");
+        }
 
         var baseHex = Color.ToHex();
-        if (Color == HColor.Default)
-            baseHex = "#fff";
 
         var bg = $"bg-[{baseHex}]";
         var bgHover = $"hover:{bg}/80";
@@ -153,12 +162,14 @@
                 break;
 
             case HVariant.Flat:
+
                 classes.Add($"{bg}/50");
                 classes.Add($"border-[{baseHex}]/20");
-                
+
                 classes.Add($"hover:{bg}/40");
                 classes.Add($"hover:border-[{baseHex}]/10");
-
+                if (Color == HColor.Default)
+                    baseHex = "#fff";
                 classes.Add($"text-[{baseHex}]");
                 break;
 
@@ -167,6 +178,15 @@
                 classes.Add($"hover:{bg}/20");
                 classes.Add($"border-[#00000000]");
                 classes.Add($"hover:border-[{baseHex}]/5");
+                break;
+
+            case HVariant.Shadow:
+                classes.Add($"border-[{baseHex}]");
+                classes.Add($"hover:border-[{baseHex}]/80");
+                classes.Add("text-white");
+                classes.Add(bg);
+                classes.Add(bgHover);
+                classes.Add($"drop-shadow-[0_25px_25px_{baseHex}]");
                 break;
 
             case HVariant.Solid:

@@ -51,3 +51,4 @@ function bindRipples() {
 }
 
 setInterval(bindRipples, 500);
+

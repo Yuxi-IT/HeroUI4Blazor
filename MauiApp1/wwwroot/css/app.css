@@ -1,4 +1,12 @@
-﻿@layer utilities {
+﻿::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+@layer utilities {
     @keyframes fade-in {
         from {
             opacity: 0;

@@ -1,5 +1,4 @@
-﻿@namespace HeroUI.Components
-@using MauiApp1.HeroUI.Enum
+﻿@using MauiApp1.HeroUI.Enum
 @using MauiApp1.HeroUI.Extensions
 @using Microsoft.AspNetCore.Components.Web
 
@@ -11,7 +10,7 @@
         @onclick="HandleClick"
         disabled="@Disabled"
     />
-    <span class="checkbox-mark w-5 h-5 border-2 border-gray-400 rounded-md flex items-center justify-center relative overflow-hidden transition-all duration-200 ease-in-out active:scale-[0.97] peer-checked:bg-[@Color.ToHex()] peer-checked:border-[@Color.ToHex()]">
+    <span class="checkbox-mark rounded-@Radius bg-[#1a1a1a] w-5 h-5 border-2 border-gray-400 flex items-center justify-center relative overflow-hidden transition-all duration-200 ease-in-out active:scale-[0.97] peer-checked:bg-[@Color.ToHex()] peer-checked:border-[@Color.ToHex()]">
         <svg class="check-icon w-3 h-3 stroke-current text-white absolute" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
@@ -26,11 +25,12 @@
 @code {
     [Parameter] public bool Checked { get; set; }
     [Parameter] public EventCallback<bool> CheckedChanged { get; set; }
-    [Parameter] public string Label { get; set; }
+    [Parameter] public string Label { get; set; } = "";
     [Parameter] public HColor Color { get; set; } = HColor.Primary;
     [Parameter] public bool Disabled { get; set; }
-    [Parameter] public string ClassName { get; set; }
-    [Parameter] public string Style { get; set; }
+    [Parameter] public string ClassName { get; set; } = "";
+    [Parameter] public string Style { get; set; } = "";
+    [Parameter] public string Radius { get; set; } = "md";
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     private async Task HandleClick(MouseEventArgs e)

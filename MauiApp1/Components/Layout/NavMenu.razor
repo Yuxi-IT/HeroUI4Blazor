@@ -1,5 +1,9 @@
-﻿@using MauiApp1.Models;
-<div class="@GetNavMenuClass() bg-white/30 dark:bg-black/30 @(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "")">
+﻿@inject NavigationManager NavManager
+@using MauiApp1.Models
+@using MauiApp1.HeroUI.Enum
+@using Microsoft.Maui.Devices
+
+<div class="@GetSideNavClass() bg-white/30 dark:bg-black/30 @(DeviceInfo.Platform == DevicePlatform.Android ? "pt-[30px]" : "")">
     <div class="flex items-center justify-between p-4">
         <a href="/" class="flex items-center gap-2 font-bold text-sky-600 dark:text-sky-500 ml-5">
             <svg fill="none" height="24" viewBox="0 0 32 32" width="24" class="text-sky-600 dark:text-sky-500 scale-[2]">
@@ -15,7 +19,7 @@
         </HButton>
     </div>
 
-    <nav class="flex flex-col h-full p-4 text-zinc-800 dark:text-zinc-200 text-[15px]">
+    <nav class="flex flex-col h-full p-4 text-zinc-800 z-41 dark:text-zinc-200 text-[15px]">
         <div class="flex-1 space-y-1 overflow-y-auto">
             @foreach (var route in Configs.RouteList)
             {
@@ -28,16 +32,40 @@
             }
         </div>
     </nav>
-
 </div>
 
 @if (IsOpen)
 {
-    <div class="fixed inset-0 dark:bg-black/30 bg-white/30 backdrop-blur-md z-20 lg:hidden md:hidden" @onclick="ToggleMenu"></div>
+    <div class="fixed inset-0 dark:bg-black/30 bg-white/30 backdrop-blur-md z-41 lg:hidden md:hidden" @onclick="ToggleMenu"></div>
 }
+
+<div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t dark:border-zinc-700 z-20 lg:hidden md:hidden">
+    <div class="flex justify-around">
+        @foreach (var route in Configs.RouteList)
+        {
+            <NavLink 
+                href="@route.Href" 
+                Match="NavLinkMatch.All"
+                class="flex flex-col items-center justify-center flex-1 py-2 px-1 text-sm transition-colors"
+                ActiveClass="text-sky-600 dark:text-sky-500">
+                
+                <HIcon Name="@route.Icon" ClassName="text-lg mb-1" />
+                <span>@route.Name</span>
+            </NavLink>
+        }
+    </div>
+</div>
 
 @code {
     private bool IsOpen { get; set; }
+
+    protected override void OnInitialized()
+    {
+        NavManager.LocationChanged += (s, e) => 
+        {
+            if (IsOpen) ToggleMenu();
+        };
+    }
 
     public void ToggleMenu()
     {
@@ -45,9 +73,11 @@
         StateHasChanged();
     }
 
-    private string GetNavMenuClass()
+    private string GetSideNavClass()
     {
-        var baseClasses = "fixed left-0 top-0 z-30 h-screen w-64 border-r dark:border-zinc-700 dark:bg-zinc-900 transform transition-all duration-300 ease-in-out";
-        return IsOpen ? $"{baseClasses} translate-x-0" : $"{baseClasses} -translate-x-full lg:translate-x-0 md:translate-x-0";
+        var baseClasses = "fixed left-0 top-0 z-30 h-screen w-64 border-r dark:border-zinc-700 dark:bg-zinc-900/80 backdrop-blur-md transform transition-all duration-300 ease-in-out";
+        return IsOpen 
+            ? $"{baseClasses} translate-x-0" 
+            : $"{baseClasses} -translate-x-full lg:translate-x-0 md:translate-x-0";
     }
 }
