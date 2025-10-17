@@ -1,0 +1,39 @@
+﻿@using BlazorApp1.HeroUI.Enum;
+@using BlazorApp1.HeroUI.Models;
+
+<div class="inline-flex items-center justify-center h-auto @ClassName" role="group">
+    @for (int i = 0; i < Buttons.Count; i++)
+    {
+        var index = i;
+        var button = Buttons[index];
+        var isFirst = index == 0;
+        var isLast = index == Buttons.Count - 1;
+
+        var position = isFirst 
+            ? ButtonGroupPosition.First 
+            : isLast 
+                ? ButtonGroupPosition.Last 
+                : ButtonGroupPosition.Middle;
+
+        <HButton 
+            Color="@Color"
+            Variant="@Variant"
+            Radius="@Radius"
+            GroupPosition="position"
+            InGroup="true"
+            ClassName="@button.ClassName"
+            OnClick="button.OnClick"
+            OnLongPress="button.OnLongPress">
+            @button.Content
+        </HButton>
+    }
+</div>
+
+@code {
+    [Parameter] public List<ButtonItem> Buttons { get; set; } = new();
+
+    [Parameter] public HColor Color { get; set; } = HColor.Default;
+    [Parameter] public HVariant Variant { get; set; } = HVariant.Solid;
+    [Parameter] public string? ClassName { get; set; }
+    [Parameter] public string Radius { get; set; } = "xl";
+}

@@ -1,0 +1,18 @@
+﻿@using BlazorApp1.HeroUI.Enum;
+@using BlazorApp1.HeroUI.Extensions;
+@using Microsoft.AspNetCore.Components.Web;
+@using System.Drawing
+
+<img class="text-@Color.ToString().ToLower() w-[@(Size.Width)px] h-[@(Size.Height)px] @ClassName dark:invert"
+     src="icon/react-feather/@(Name.ToLower()).svg" />
+
+@code {
+    [Parameter] public HColor Color { get; set; } = HColor.Primary;
+    [Parameter] public required string Name { get; set; }
+    [Parameter] public string? ClassName { get; set; }
+    [Parameter] public required Size Size { get; set; } = new()
+        {
+            Width = 24,
+            Height = 24
+        };
+}

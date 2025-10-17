@@ -1,0 +1,116 @@
+﻿@page "/"
+
+@code {
+    List<HColor> hColors = [
+            HColor.Default,
+            HColor.Primary,
+            HColor.Warning,
+            HColor.Danger,
+            HColor.Success,
+            HColor.Secondary
+        ];
+
+    List<HVariant> hVariant = [
+            HVariant.Solid,
+            HVariant.Shadow,
+            HVariant.Flat,
+            HVariant.Ghost,
+            HVariant.Bordered,
+            HVariant.Light
+
+    ];
+
+    List<string> Radius = ["full", "xl", "lg", "md", "sm", "none"];
+}
+<h1>Hello, world!</h1>
+
+Welcome to HeroUI for Blazor.
+<div>
+    <div class="mb-4">
+        <h1>Buttons</h1>
+        <h2>@((MarkupString)text)</h2>
+        @foreach (var color in hColors)
+        {
+            <div class="mb-2">
+                <p class="text-[@color.ToHex()] w-20">@color.ToString()</p>
+
+                @foreach (var variant in hVariant)
+                {
+                    <HButton Color="color"
+                             Variant="variant"
+                             ClassName="m-1 w-[80px]"
+                             OnLongPress="() => HandlePress(color)"
+                             OnClick="() => HandleClick(color)">
+                        @variant
+                    </HButton>
+                }
+            </div>
+        }
+        <div class="mb-2">
+            <p>Radius</p>
+            @foreach (var Radiu in Radius)
+            {
+                <HButton ClassName="m-1"
+                         Radius="@Radiu">
+                    @Radiu
+                </HButton>
+            }
+        </div>
+
+        <div class="mb-2">
+            <h1 class="text-24">ButtonGroup</h1>
+            <ButtonGroup Color="HColor.Primary"
+                         Variant="HVariant.Solid"
+                         Buttons="@hButtons">
+
+            </ButtonGroup>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h1 class="text-24">CheckBox</h1>
+        <div class="mb-2">
+            @foreach (var color in hColors)
+            {
+                <HCheckBox Label="@color.ToString()"
+                           ClassName="mx-2"
+                           Color="color"
+                           Checked="true" />
+            }
+        </div>
+        <div class="mb-2">
+            @foreach (var radiu in Radius)
+            {
+                <HCheckBox Label="@radiu.ToString()"
+                           ClassName="mx-2"
+                           Radius="@radiu"
+                           Checked="true" />
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ButtonItem> hButtons = new List<ButtonItem>
+        {
+            new()
+            {
+                Content = @<text>Home</text>,
+                ClassName = "w-[100px]"
+            },
+            new()
+            {
+                Content = @<text>Counter</text>,
+                ClassName = "w-[100px]"
+            },
+            new()
+            {
+                Content = @<text>Weather</text>,
+                ClassName = "w-[100px]"
+            }
+        };
+
+    private string text = "Waiting...";
+    private void HandlePress(HColor Color) => text = $"<span class=\"text-[{Color.ToHex()}]\">LongPress {Color}</span>";
+    private void HandleClick(HColor Color) => text = $"<span class=\"text-[{Color.ToHex()}]\">OnClick {Color}</span>";
+}

@@ -1,0 +1,42 @@
+﻿@using BlazorApp1.Models
+@inherits LayoutComponentBase
+
+<div class="fixed top-0 left-0 right-0 bottom-0 flex flex-col bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+
+
+    <header class="sticky top-0 z-20 border-b border-zinc-200 bg-zinc-100/80 backdrop-blur-md dark:border-zinc-700 dark:bg-zinc-900/80 lg:hidden md:hidden">
+        <div class="max-w-screen-xl mx-auto px-4">
+            <div class="flex h-16 items-center justify-between">
+                <HButton OnClick="ToggleNavMenu"
+                         ClassName="p-2 rounded-md hover:bg-zinc-700/40 lg:hidden md:hidden"
+                         Variant="HVariant.Light"
+                         IsIconOnly="true">
+                    <HIcon Name="Menu" />
+                </HButton>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <NavMenu @ref="NavMenu" />
+        <main class="flex-1 lg:ml-64 md:ml-64 overflow-y-auto transition-all duration-300">
+            <div @key="@NavigationKey" class="animate-fade-in opacity-0">
+                <article class="max-w-screen-xl mx-auto px-4 py-6 mb-[30px]">
+                    @Body
+                </article>
+            </div>
+        </main>
+    </div>
+</div>
+
+@code {
+    private NavMenu NavMenu { get; set; }
+    private string NavigationKey => NavigationManager.Uri;
+
+    [Inject] private NavigationManager NavigationManager { get; set; }
+
+    private void ToggleNavMenu()
+    {
+        NavMenu?.ToggleMenu();
+    }
+}
