@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-@code {
+@code{
     List<HColor> hColors = [
             HColor.Default,
             HColor.Primary,
@@ -31,20 +31,20 @@ Welcome to HeroUI for Blazor.
         <h2>@((MarkupString)text)</h2>
         @foreach (var color in hColors)
         {
-            <div class="mb-2">
-                <p class="text-[@color.ToHex()] w-20">@color.ToString()</p>
+          <div class="mb-2">
+            <p class="text-[@color.ToHex()] w-20">@color.ToString()</p>
 
-                @foreach (var variant in hVariant)
-                {
-                    <HButton Color="color"
-                             Variant="variant"
-                             ClassName="m-1 w-[80px]"
-                             OnLongPress="() => HandlePress(color)"
-                             OnClick="() => HandleClick(color)">
+            @foreach (var variant in hVariant)
+            {
+                <HButton Color="color" 
+                         Variant="variant"
+                         ClassName="m-1 w-[80px]" 
+                         OnLongPress="() => HandlePress(color)" 
+                         OnClick="() => HandleClick(color)">
                         @variant
-                    </HButton>
-                }
-            </div>
+                </HButton>
+            }
+        </div>
         }
         <div class="mb-2">
             <p>Radius</p>
@@ -56,14 +56,40 @@ Welcome to HeroUI for Blazor.
                 </HButton>
             }
         </div>
+    </div>
 
+    <div class="mb-4">
+        <h1 class="text-24">ButtonGroup</h1>
         <div class="mb-2">
-            <h1 class="text-24">ButtonGroup</h1>
-            <ButtonGroup Color="HColor.Primary"
-                         Variant="HVariant.Solid"
-                         Buttons="@hButtons">
+        @foreach (var variant in hVariant)
+        {
+            <HButtonGroup Color="HColor.Primary"
+                          Variant="@variant"
+                          Buttons="@hButtons"
+                          ClassName="m-1">
 
-            </ButtonGroup>
+            </HButtonGroup>
+        }
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h1 class="text-24">Badge</h1>
+        <div class="mb-2">
+        @foreach (var color in hColors)
+        {
+            <HBadge Content="5" Color="@color" ClassName="mx-1" Placement="top-right">
+                <HButton ClassName="w-[110px]">@color</HButton>
+            </HBadge>
+        }
+        </div>
+        <div class="mb-2">
+            @foreach (var radiu in Radius)
+            {
+                <HBadge Content="5" Radius="@radiu" ClassName="mx-1" Placement="top-right">
+                    <HButton IsIconOnly>@radiu</HButton>
+                </HBadge>
+            }
         </div>
     </div>
 
@@ -88,9 +114,10 @@ Welcome to HeroUI for Blazor.
             }
         </div>
     </div>
+
 </div>
 
-@code {
+@code{
     private List<ButtonItem> hButtons = new List<ButtonItem>
         {
             new()

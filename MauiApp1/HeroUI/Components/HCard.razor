@@ -1,0 +1,147 @@
+﻿@using MauiApp1.HeroUI.Enum
+@using MauiApp1.HeroUI.Extensions
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="card-container @BuildBaseClasses()" style="@Style" @onclick="HandleClick">
+    @if (HasHeader)
+    {
+        <div class="card-header @BuildHeaderClasses()">
+            @HeaderContent
+        </div>
+    }
+
+    <div class="card-body @BuildBodyClasses()">
+        @ChildContent
+    </div>
+
+    @if (HasFooter)
+    {
+        <div class="card-footer @BuildFooterClasses()">
+            @FooterContent
+        </div>
+    }
+
+    @if (IsPressable && !DisableRipple && !DisableAnimation)
+    {
+        <div class="card-ripple" @ref="rippleRef"></div>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment HeaderContent { get; set; }
+    [Parameter] public RenderFragment FooterContent { get; set; }
+    [Parameter] public HColor Color { get; set; } = HColor.Primary;
+    [Parameter] public string Shadow { get; set; } = "md";
+    [Parameter] public string Radius { get; set; } = "lg";
+    [Parameter] public bool FullWidth { get; set; } = false;
+    [Parameter] public bool IsHoverable { get; set; } = false;
+    [Parameter] public bool IsPressable { get; set; } = false;
+    [Parameter] public bool IsBlurred { get; set; } = false;
+    [Parameter] public bool IsFooterBlurred { get; set; } = false;
+    [Parameter] public bool IsDisabled { get; set; } = false;
+    [Parameter] public bool DisableAnimation { get; set; } = false;
+    [Parameter] public bool DisableRipple { get; set; } = false;
+    [Parameter] public string ClassName { get; set; } = "";
+    [Parameter] public string Style { get; set; } = "";
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    private ElementReference rippleRef;
+    private bool HasHeader => HeaderContent != null;
+    private bool HasFooter => FooterContent != null;
+
+    private string BuildBaseClasses()
+    {
+        var classes = new List<string>
+        {
+            "flex", "flex-col", "relative", "overflow-hidden", "h-auto",
+            "outline-solid", "outline-transparent", "text-foreground",
+            "box-border", "bg-content1"
+        };
+
+        // Shadow variants
+        classes.Add(Shadow switch
+        {
+            "none" => "shadow-none",
+            "sm" => "shadow-sm",
+            "lg" => "shadow-lg",
+            _ => "shadow-md"
+        });
+
+        // Radius variants
+        classes.Add(Radius switch
+        {
+            "none" => "rounded-none",
+            "sm" => "rounded-sm",
+            "md" => "rounded-md",
+            _ => "rounded-lg"
+        });
+
+        if (FullWidth) classes.Add("w-full");
+        if (IsHoverable) classes.Add("hover:bg-content2 transition-colors");
+        if (IsPressable) classes.Add("cursor-pointer");
+        if (IsBlurred) classes.Add("bg-background/80 backdrop-blur-md backdrop-saturate-150");
+        if (IsDisabled) classes.Add("opacity-70 cursor-not-allowed");
+        if (!DisableAnimation) classes.Add("transition-all duration-200");
+        if (ClassName != null) classes.Add(ClassName);
+
+        return string.Join(" ", classes);
+    }
+
+    private string BuildHeaderClasses()
+    {
+        var classes = new List<string>
+        {
+            "flex", "p-3", "z-10", "w-full", "justify-start",
+            "items-center", "shrink-0", "overflow-inherit"
+        };
+
+        // Header radius
+        classes.Add(Radius switch
+        {
+            "none" => "rounded-t-none",
+            "sm" => "rounded-t-sm",
+            "md" => "rounded-t-md",
+            _ => "rounded-t-lg"
+        });
+
+        return string.Join(" ", classes);
+    }
+
+    private string BuildBodyClasses()
+    {
+        return "relative flex flex-1 w-full p-3 flex-auto flex-col break-words text-left";
+    }
+
+    private string BuildFooterClasses()
+    {
+        var classes = new List<string>
+        {
+            "p-3", "h-auto", "flex", "w-full", "items-center", "overflow-hidden"
+        };
+
+        // Footer radius
+        classes.Add(Radius switch
+        {
+            "none" => "rounded-b-none",
+            "sm" => "rounded-b-sm",
+            "md" => "rounded-b-md",
+            _ => "rounded-b-lg"
+        });
+
+        if (IsFooterBlurred)
+        {
+            classes.Add("bg-background/10 backdrop-blur backdrop-saturate-150");
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    private async Task HandleClick(MouseEventArgs e)
+    {
+        if (IsDisabled) return;
+
+        await OnClick.InvokeAsync(e);
+    }
+
+}

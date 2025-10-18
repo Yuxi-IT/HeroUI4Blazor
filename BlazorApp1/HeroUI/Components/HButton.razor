@@ -1,5 +1,5 @@
-﻿@using BlazorApp1.HeroUI.Enum;
-@using BlazorApp1.HeroUI.Extensions;
+﻿@using MauiApp1.HeroUI.Enum;
+@using MauiApp1.HeroUI.Extensions;
 @using Microsoft.AspNetCore.Components.Web;
 @implements IDisposable
 
@@ -119,18 +119,19 @@
         classes.Add(_isPressed ? "scale-[0.97]" : "scale-100");
 
         classes.Add("box-border");
+        classes.Add($"border-2");
         if (InGroup)
         {
             switch (GroupPosition)
             {
                 case ButtonGroupPosition.First:
-                    classes.Add($"rounded-l-{Radius} rounded-r-none");
+                    classes.Add($"rounded-l-{Radius} rounded-r-none border-r-0");
                     break;
                 case ButtonGroupPosition.Last:
-                    classes.Add($"rounded-l-none rounded-r-{Radius}");
+                    classes.Add($"rounded-l-none rounded-r-{Radius} border-l-0");
                     break;
                 case ButtonGroupPosition.Middle:
-                    classes.Add("rounded-none");
+                    classes.Add("rounded-none border-x-0");
                     break;
                 default:
                     classes.Add($"rounded-{Radius}");
@@ -139,14 +140,14 @@
         }
         else
         {
-             classes.Add($"rounded-{Radius}");
+            classes.Add($"rounded-{Radius}");
         }
 
         var baseHex = Color.ToHex();
 
         var bg = $"bg-[{baseHex}]";
         var bgHover = $"hover:{bg}/80";
-        classes.Add($"border-2");
+
         switch (Variant)
         {
             case HVariant.Bordered:

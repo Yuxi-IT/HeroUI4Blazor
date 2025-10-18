@@ -1,0 +1,48 @@
+﻿@using BlazorApp1.HeroUI.Enum
+@using BlazorApp1.HeroUI.Extensions
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="badge-container relative inline-flex @ClassName" style="@Style">
+    @ChildContent
+
+    <span class="badge-content absolute rounded-@Radius w-4 h-4 text-center text-xs font-medium transition-all duration-200 ease-in-out @GetPositionClasses() @GetColorClasses()">
+        @Content
+    </span>
+</div>
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public string Content { get; set; } = "";
+    [Parameter] public HColor Color { get; set; } = HColor.Primary;
+    [Parameter] public string Placement { get; set; } = "top-right";
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string ClassName { get; set; } = "";
+    [Parameter] public string Style { get; set; } = "";
+    [Parameter] public string Radius { get; set; } = "xl";
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    private string GetPositionClasses()
+    {
+        return Placement switch
+        {
+            "top-left" => "top-0 left-0 -translate-x-1/4 -translate-y-1/4",
+            "bottom-right" => "bottom-0 right-0 translate-x-1/4 translate-y-1/4",
+            "bottom-left" => "bottom-0 left-0 -translate-x-1/4 translate-y-1/4",
+            _ => "top-0 right-0 translate-x-1/4 -translate-y-1/4"
+        };
+    }
+
+    private string GetColorClasses()
+    {
+        var hex = Color.ToHex();
+        return $"bg-[{hex}] text-white";
+    }
+
+    private async Task HandleClick(MouseEventArgs e)
+    {
+        if (!Disabled)
+        {
+            await OnClick.InvokeAsync(e);
+        }
+    }
+}
